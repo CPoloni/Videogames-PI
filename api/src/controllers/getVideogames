@@ -1,0 +1,35 @@
+const axios = requiere("axios");
+const { Videogame } = require("../db_connections");
+
+const { API_KEY } = process.env;
+
+// para obtener Videogames de la API
+const vgApi = async () => {
+  let URL = "https://api.rawg.io/api/games?key=";
+  let allVideogames = []; // aca voy a guardar todos los videogames (api y bd)
+  //pruebo cuantos me trar la primera vez
+  try {
+    for (let i = 0; i < 5; i++) {
+      const respuesta = await axios.get(`${URL}${API_KEY}`);
+      respuesta.data.results.map((vg) => {
+        allVideogames.push({
+          id: vg.id,
+          name: vg.name,
+          image: vg.background_image,
+          rating: vg.rating,
+          //mapeo genres y platforms que tienen varios objetos dentro de un array
+          // podria ponerle un .joint para q me los una en un string (", ")
+          genres: vg.genres.map((g) => g.name),
+          platforms: vg.platforms.map((p) => p.name),
+        });
+      });
+      URL = respuesta.data.next; // cambia la url a la url siguiente
+    }
+    return allVideogames;
+  } catch (error) {
+    error.message;
+  }
+}; // crear la ruta
+
+module.exports = vgApi;
+//para juntar los videogames de bd y de la api: allVideogames  = [...bd, ...api]

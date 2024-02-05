@@ -6,21 +6,13 @@ module.exports = (sequelize) => {
     "Genres",
     {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+        default: DataTypes.UUIDV4,
       },
       name: {
-        type: DataTypes.ENUM(
-          "Action",
-          "Strategy",
-          "Role playing game",
-          "Shooter",
-          "Adventure",
-          "Puzzle",
-          "Careers",
-          "Sports"
-        ),
+        type: DataTypes.STRING,
         allowNull: false,
       },
     },

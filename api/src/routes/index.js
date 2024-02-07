@@ -9,5 +9,6 @@ const router = Router();
 // Ejemplo: router.use('/auth', authRouter);
 
 router.use("/videogames", videogamesRoute);
+//router.use("/videogames/name", videogamesRoute);
 
 module.exports = router;

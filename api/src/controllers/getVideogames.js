@@ -60,15 +60,15 @@ const vgTotal = async () => {
 
 //********** GET/VIDEOGAMES/NAMES?= **********//
 
-/* ----- obtengo Videogames por nombre de la API ----- */
-const vgByNameApi = async (name) => {
-  let videogamesName = []; // guardo los videogames que coincidan con el nombre (api)
+const vgByName = async (name) => {
   try {
-    const respuesta = await axios.get(
-      `https://api.rawg.io/api/games?search=${name}&key=${API_KEY}`
+    /* ----- obtengo Videogames por nombre de la API ----- */
+    let arrayByNameApi = [];
+    const respApi = await axios.get(
+      `https://api.rawg.io/api/games?search=${name}&&key=${API_KEY}`
     );
-    respuesta.data.results.map((vg) => {
-      videogamesName.push({
+    respApi.data.results.map((vg) => {
+      return arrayByNameApi.push({
         id: vg.id,
         name: vg.name,
         image: vg.background_image,
@@ -77,57 +77,44 @@ const vgByNameApi = async (name) => {
         platforms: vg.platforms.map((p) => p.platform.name),
       });
     });
-    return videogamesName;
-  } catch (error) {
-    //throw Error(error.message);
-    if (axios.isAxiosError(error)) {
-      console.log(error.response.data);
-    } else {
-      console.log(error);
-    }
-  }
-};
+    // arrayByNameApi = arrayByNameApi.filter(
+    //   (vg) => vg.name.toLowerCase() || vg.name.toUperCase()
+    //);
 
-/* ----- obtengo Videogames por nombre de la DB----- */
-const vgByNameDb = async (name) => {
-  try {
-    return await Videogame.findAll({
+    /* ----- obtengo Videogames por nombre de la DB----- */
+    const byNamDb = await Videogame.findAll({
       where: {
         name: name,
       },
       include: [
         {
-          model: Genres, // de este model quiero q me incluya solo atributo name
+          model: Genres,
           attributes: ["name"],
-          through: { atributes: [] },
+          through: {
+            atributes: [],
+          },
         },
       ],
     });
-  } catch (error) {
+    const arrayByNameDb = []; //guardo en un array solo la info que me interesa de v de DB para mostrar al inicio
+    byNamDb.map((vg) => {
+      return arrayByNameDb.push({
+        id: vg.id,
+        name: vg.name,
+        image: vg.background_image,
+        rating: vg.rating,
+        genres: vg.genres.map((g) => g.name),
+        platforms: vg.platforms.map((p) => p.platform.name),
+      });
+    });
+    const allVgByName = [...arrayByNameApi, ...arrayByNameDb];
+    return allVgByName;
+  } catch {
     throw Error(error.message);
   }
 };
 
-/* ----- uno las dos informaciones de la DB y Api ----- */
-const totalByName = async () => {
-  const byNameApi = await vgByNameApi(); //guardo la info q me trae la ejecucin de vgByNameApi
-  const byNameDb = await vgByNameDb(); //guardo la info q me trae la ejecucin de vgByNameDb
-  const byNametotal = [...byNameApi, ...byNameDb];
-  if (byNametotal.length < 1) {
-    return "There are no results for that name";
-  } else if (byNametotal.length >= 1 && byNametotal.length <= 15) {
-    return byNametotal;
-  } else {
-    //return byNametotal.slice(0, 15);
-    const byName15 = byNametotal.slice(0, 15);
-    return byName15;
-  }
-};
-
-//SI HAY NAME TENGO QUE DEVOLVER LOS PRIMEROS 15 DE LA API Y BASE DE DATOS
-//con un metdo slice corto el array que me guarda con los nombres
-
 //********** GET/VIDEOGAMES/:IDVIDEOGAMES= **********//
 
-module.exports = { vgTotal, totalByName };
+module.exports = { vgTotal, vgByName };
 //para juntar los videogames de bd y de la api: allVideogames  = [...bd, ...api]

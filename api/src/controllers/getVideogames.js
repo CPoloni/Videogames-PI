@@ -6,17 +6,17 @@ const { API_KEY } = process.env;
 
 //********** GET/VIDEOGAMES **********//
 
-/* ----- obtengo 100 Videogames de la API ----- */
-const vgApi = async () => {
-  let allVideogames = []; // aca voy a guardar todos los videogames (api)
+const allVideog = async () => {
   try {
+    /* ----- obtengo 100 Videogames de la API ----- */
+    let vgApi100 = []; // aca guardo todos los videogames (api)
     for (let i = 1; i < 5; i++) {
-      const respuesta = await axios.get(
+      const resp = await axios.get(
         `https://api.rawg.io/api/games?key=${API_KEY}&page${i}`
       );
-      respuesta.data.results.map((vg) => {
-        // puedo usar un for each
-        allVideogames.push({
+      console.log(resp);
+      resp.data.results.map((vg) => {
+        vgApi100.push({
           id: vg.id,
           name: vg.name,
           image: vg.background_image,
@@ -27,16 +27,10 @@ const vgApi = async () => {
         });
       });
     }
-    return allVideogames;
-  } catch (error) {
-    throw Error(error.message);
-  }
-};
 
-/* ----- obtengo todos los Videogames de la DB ----- */
-const vgDb = async () => {
-  try {
-    return await Videogame.findAll({
+    /* ----- obtengo todos los Videogames de la DB ----- */
+
+    let VgDb = await Videogame.findAll({
       include: [
         {
           model: Genres, // de este model quiero q me incluya solo atributo name
@@ -45,18 +39,23 @@ const vgDb = async () => {
         },
       ],
     });
-  } catch (error) {
+    const arrayAllVgDb = []; //guardo en un array solo la info que me interesa de VG de DB
+    VgDb.map((vg) => {
+      return arrayAllVgDb.push({
+        id: vg.id,
+        name: vg.name,
+        image: vg.background_image,
+        rating: vg.rating,
+        genres: vg.genres.map((g) => g.name),
+        platforms: vg.platforms.map((p) => p.platform.name),
+      });
+    });
+    const allVideogames = [...arrayAllVgDb, ...vgApi100];
+    return allVideogames;
+  } catch {
     throw Error(error.message);
   }
 };
-/* ----- uno las dos informaciones de la DB y Api ----- */
-const vgTotal = async () => {
-  const infoApi = await vgApi(); //guardo la info q me trae la ejecucin de vgApi
-  const infoDb = await vgDb(); //guardo la info q me trae la ejecucin de vgDb
-  const infoTotal = [...infoApi, ...infoDb];
-  return infoTotal;
-};
-// exporto vgTotal
 
 //********** GET/VIDEOGAMES/NAMES?= **********//
 
@@ -64,10 +63,11 @@ const vgByName = async (name) => {
   try {
     /* ----- obtengo Videogames por nombre de la API ----- */
     let arrayByNameApi = [];
-    const respApi = await axios.get(
+    const resp = await axios.get(
       `https://api.rawg.io/api/games?search=${name}&&key=${API_KEY}`
     );
-    respApi.data.results.map((vg) => {
+    resp.data.results.map((vg) => {
+      //
       return arrayByNameApi.push({
         id: vg.id,
         name: vg.name,
@@ -83,6 +83,8 @@ const vgByName = async (name) => {
 
     /* ----- obtengo Videogames por nombre de la DB----- */
     const byNamDb = await Videogame.findAll({
+      //TRER SOLO LA INFO DE VIEOGAMES QU EQUIERO
+
       where: {
         name: name,
       },
@@ -96,7 +98,7 @@ const vgByName = async (name) => {
         },
       ],
     });
-    const arrayByNameDb = []; //guardo en un array solo la info que me interesa de v de DB para mostrar al inicio
+    const arrayByNameDb = []; //guardo en un array solo la info que me interesa de VG de DB
     byNamDb.map((vg) => {
       return arrayByNameDb.push({
         id: vg.id,
@@ -114,7 +116,58 @@ const vgByName = async (name) => {
   }
 };
 
-//********** GET/VIDEOGAMES/:IDVIDEOGAMES= **********//
+//********** GET/VIDEOGAMES/:IDVIDEOGAME= **********//
+//(separo las dos funciones, n otra funcion segun formato Id busco en API o DB)
 
-module.exports = { vgTotal, vgByName };
-//para juntar los videogames de bd y de la api: allVideogames  = [...bd, ...api]
+/* ----- obtengo Videogame por ID de la API----- */
+const vgIdApi = async (id) => {
+  const vgApi = [];
+  try {
+    const resp = await axios.get(
+      `https://api.rawg.io/api/games/${id}?key=${API_KEY}`
+    );
+    //console.log(resp);
+    const dataId = resp.data;
+    vgApi.push({
+      id: dataId.id,
+      name: dataId.name,
+      image: dataId.background_image,
+      rating: dataId.rating,
+      genres: dataId.genres.map((g) => g.name),
+      description: dataId.description,
+      released: dataId.released,
+      platforms: dataId.platforms.map((p) => p.platform.name),
+    });
+    //console.log(vgApi);
+
+    return vgApi;
+  } catch (error) {
+    throw Error(error.message);
+  }
+};
+
+/* ----- obtengo Videogame por ID de la DB----- */
+const vgIdDb = async (id) => {
+  try {
+    let VgDb = await Videogame.findByPk(id, {
+      include: [
+        {
+          model: Genres, // de este model quiero q me incluya solo atributo name
+          attributes: ["name"],
+          through: { atributes: [] },
+        },
+      ],
+    });
+  } catch (error) {
+    throw Error(error.message);
+  }
+};
+
+const vgId = async (id, source) => {
+  if (source === "API") return vgIdApi(id);
+  else return vgIdDb(id);
+};
+
+//********** POST/CREAR VIDEOGAME **********//
+
+module.exports = { allVideog, vgByName, vgId };

@@ -126,7 +126,7 @@ const vgIdApi = async (id) => {
     const resp = await axios.get(
       `https://api.rawg.io/api/games/${id}?key=${API_KEY}`
     );
-    //console.log(resp);
+    console.log(resp);
     const dataId = resp.data;
     vgApi.push({
       id: dataId.id,
@@ -170,4 +170,27 @@ const vgId = async (id, source) => {
 
 //********** POST/CREAR VIDEOGAME **********//
 
-module.exports = { allVideog, vgByName, vgId };
+const createVg = async ({
+  name,
+  image,
+  rating,
+  description,
+  released,
+  platforms,
+  genre,
+}) => {
+  if (
+    !name ||
+    !image ||
+    !rating ||
+    description ||
+    !released ||
+    !platforms ||
+    !genre
+  ) {
+  }
+};
+
+//utilizar findorcreate
+
+module.exports = { allVideog, vgByName, vgId, createVg };

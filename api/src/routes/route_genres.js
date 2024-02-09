@@ -1,14 +1,8 @@
 const { Router } = require("express");
-const { genresVg } = require("../controllers/getGenres");
+const { getGenres } = require("../handlers/handler_genres");
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-  try {
-    const genres = await genresVg();
-    res.status(200).json(genres);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
+router.get("/", getGenres);
+
 module.exports = router;

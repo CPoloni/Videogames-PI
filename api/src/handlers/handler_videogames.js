@@ -44,15 +44,24 @@ postVideogame = async (req, res) => {
   const { name, image, rating, description, released, platforms, genre } =
     req.body;
   try {
-    const newVideogame = Videogames.create({
+    const newVideogame = await createVg(
       name,
       image,
       rating,
       description,
       released,
       platforms,
-      genre,
-    });
+      genre
+    );
+    // const newVideogame = Videogames.create({
+    //   name,
+    //   image,
+    //   rating,
+    //   description,
+    //   released,
+    //   platforms,
+    //   genre,
+    // });
     res.status(200).json(newVideogame);
   } catch (error) {
     res.status(400).json({ error: error.message });

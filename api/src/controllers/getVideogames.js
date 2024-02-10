@@ -183,11 +183,35 @@ const createVg = async ({
     !name ||
     !image ||
     !rating ||
-    description ||
+    !description ||
     !released ||
     !platforms ||
     !genre
   ) {
+    return "All fields must be complete";
+  }
+  if (rating < 1 || rating > 5) {
+    return "The rating entered is not within the valid parameters";
+  }
+  try {
+    //deberia ir un findOrCreated q busque si existe el mismo nombre
+    const newVg = await Videogames.create({
+      name: name,
+      image: image,
+      description: description,
+      released: released,
+      platforms: platforms, // CREAR UN MODELO DE PLATFORMS PARA VINCULAR DE MUCHOS A MUCHOS CON VG
+    });
+    console.log(newVg);
+
+    genres.forEach(async (g) => {
+      let genresVg = await Genres.findOne({ where: { name: g } });
+      newVg.addGenre(genresVg);
+    });
+
+    return newVg;
+  } catch (error) {
+    throw Error(error.message);
   }
 };
 

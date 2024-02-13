@@ -1,9 +1,11 @@
 //import style from "./Card.module.css";
 
-const Card = () => {
+const Card = (props) => {
   return (
     <div>
-      <p>esta es una card</p>
+      <p>id:{props.id}</p>
+      <p>Name:{props.name}</p>
+      <p>Genres:{props.genres}</p>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 //importo las action types
 
 const initialState = {
+  videogames: [],
   //voy a tener los array
 };
 

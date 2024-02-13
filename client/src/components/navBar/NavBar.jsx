@@ -1,7 +1,12 @@
+import { NavLink } from "react-router-dom"; //para mis botones para redirigirme, Uso NavLink en vez de Link para darle estilos
+//importar los estilos de vavBar
+//importar searchbar
+
 const NavBar = () => {
   return (
     <div>
-      <p>esta es mi NavBar</p>
+      <NavLink to="/home">HOME</NavLink>
+      <NavLink to="/form">CREATE</NavLink>
     </div>
   );
 };

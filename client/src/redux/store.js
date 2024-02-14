@@ -1,6 +1,6 @@
 /*DEPENDENCIES */
 import { createStore, applyMiddleware, compose } from "redux"; // es el mediador que le permite a redux manejar asincronias
-import { thunkMiddleware } from "redux-thunk";
+import thunkMiddleware from "redux-thunk";
 
 import reducer from "./reducer";
 

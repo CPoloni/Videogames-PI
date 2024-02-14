@@ -1,0 +1,24 @@
+.container {
+  color: aliceblue;
+  background-color: lightblue;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 20px;
+  width: 150px;
+  height: auto;
+}
+
+.container:hover {
+  background-color: rgb(67, 106, 118);
+
+  box-shadow: 0 0 1rem #506160, 0 0 1rem #506160;
+  transition: 1s;
+  background-color: rgb(133, 183, 200);
+  cursor: pointer;
+}
+.imag {
+  box-shadow: 0 0 1rem #506160, 0 0 1rem #506160;
+  width: 105px;
+  height: auto;
+  border-radius: 50%;
+}

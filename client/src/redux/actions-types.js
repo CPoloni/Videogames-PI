@@ -1,6 +1,9 @@
-// aca voy a crear las acciones con este formato
-
-// export const ADD_FAV = "ADD_FAV";
-// export const REMOVE_FAV = "REMOVE_FAV";
-// export const FILTER = "FILTER";
-// export const ORDER = "ORDER";
+export const GET_VIDEOGAMES = "GET_VIDEOGAMES";
+export const GET_VIDEOGAMES_NAME = "GET_VIDEOGAMES_NAME";
+export const GET_VIDEOGAME_ID = "GET_VIDEOGAME_ID";
+export const GET_GENRES = "GET_GENRES";
+export const ORDER_ALP = "ORDER_ALP";
+export const ORDER_RATING = "ORDER_RATING";
+export const FILTER_API_DB = "FILTER_API_DB";
+export const FILTER_GENRES = "FILTER_GENRES";
+export const CREATE_GAME = "CREATE_GAME";
